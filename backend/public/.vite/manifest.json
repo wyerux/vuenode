@@ -1,0 +1,88 @@
+{
+  "index.html": {
+    "file": "assets/index-CfViPbFB.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "css": [
+      "assets/index-Rm0iAsCo.css"
+    ],
+    "assets": [
+      "assets/logo-xg1krNkb.svg",
+      "assets/forge1-CSdVLVZs.jpg",
+      "assets/forge2-C7JTwtHJ.jpg",
+      "assets/forge3-D4crubEf.jpg",
+      "assets/team-BEwNRt3e.jpg",
+      "assets/process-HoJHLsQc.jpg",
+      "assets/history-D0Z5xMyK.jpg",
+      "assets/interior-DvGRxbaB.jpg",
+      "assets/awards-BGJirBEx.jpg",
+      "assets/map-VSgnQWqZ.jpg",
+      "assets/workshop1-BwDdXgqt.jpg",
+      "assets/workshop2-CU8S3hny.jpg",
+      "assets/workshop3-PdCY6Ogn.jpg",
+      "assets/workshop4-9jaTdaeV.jpg",
+      "assets/workshop5-DDg3pCS_.jpg"
+    ]
+  },
+  "src/assets/images/awards.jpg": {
+    "file": "assets/awards-BGJirBEx.jpg",
+    "src": "src/assets/images/awards.jpg"
+  },
+  "src/assets/images/forge1.jpg": {
+    "file": "assets/forge1-CSdVLVZs.jpg",
+    "src": "src/assets/images/forge1.jpg"
+  },
+  "src/assets/images/forge2.jpg": {
+    "file": "assets/forge2-C7JTwtHJ.jpg",
+    "src": "src/assets/images/forge2.jpg"
+  },
+  "src/assets/images/forge3.jpg": {
+    "file": "assets/forge3-D4crubEf.jpg",
+    "src": "src/assets/images/forge3.jpg"
+  },
+  "src/assets/images/history.jpg": {
+    "file": "assets/history-D0Z5xMyK.jpg",
+    "src": "src/assets/images/history.jpg"
+  },
+  "src/assets/images/interior.jpg": {
+    "file": "assets/interior-DvGRxbaB.jpg",
+    "src": "src/assets/images/interior.jpg"
+  },
+  "src/assets/images/map.jpg": {
+    "file": "assets/map-VSgnQWqZ.jpg",
+    "src": "src/assets/images/map.jpg"
+  },
+  "src/assets/images/process.jpg": {
+    "file": "assets/process-HoJHLsQc.jpg",
+    "src": "src/assets/images/process.jpg"
+  },
+  "src/assets/images/team.jpg": {
+    "file": "assets/team-BEwNRt3e.jpg",
+    "src": "src/assets/images/team.jpg"
+  },
+  "src/assets/images/workshop1.jpg": {
+    "file": "assets/workshop1-BwDdXgqt.jpg",
+    "src": "src/assets/images/workshop1.jpg"
+  },
+  "src/assets/images/workshop2.jpg": {
+    "file": "assets/workshop2-CU8S3hny.jpg",
+    "src": "src/assets/images/workshop2.jpg"
+  },
+  "src/assets/images/workshop3.jpg": {
+    "file": "assets/workshop3-PdCY6Ogn.jpg",
+    "src": "src/assets/images/workshop3.jpg"
+  },
+  "src/assets/images/workshop4.jpg": {
+    "file": "assets/workshop4-9jaTdaeV.jpg",
+    "src": "src/assets/images/workshop4.jpg"
+  },
+  "src/assets/images/workshop5.jpg": {
+    "file": "assets/workshop5-DDg3pCS_.jpg",
+    "src": "src/assets/images/workshop5.jpg"
+  },
+  "src/assets/logo.svg": {
+    "file": "assets/logo-xg1krNkb.svg",
+    "src": "src/assets/logo.svg"
+  }
+}

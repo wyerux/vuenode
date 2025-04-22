@@ -3,10 +3,10 @@ const mysql = require('mysql2');
 
 // Создаем подключение к базе данных
 const db = mysql.createConnection({
-  host: 'localhost', // Хост базы данных
-  user: 'root',      // Имя пользователя
-  password: '',      // Пароль (если есть)
-  database: 'forge', // Название базы данных
+  host: 'bew2xcnjzsv0odbtvgjw-mysql.services.clever-cloud.com', // Хост базы данных
+  user: 'uuvziwe9prbw1qse', // Имя пользователя базы данных
+  password: '1CS4uN4E5JpuQvicL7yx', // Пароль от базы данных
+  database: 'bew2xcnjzsv0odbtvgjw', // Название базы данных
 });
 
 // Функция для генерации случайного числа в диапазоне

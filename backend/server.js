@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const PORT = 5000;
@@ -13,10 +14,10 @@ app.use(express.json());
 
 // MySQL connection details
 const db = mysql.createConnection({
-  host: 'localhost', // Хост базы данных
-  user: 'root',      // Имя пользователя базы данных
-  password: '',      // Пароль от базы данных (если нет пароля, оставьте пустым)
-  database: 'forge', // Название базы данных
+  host: 'bew2xcnjzsv0odbtvgjw-mysql.services.clever-cloud.com', // Хост базы данных
+  user: 'uuvziwe9prbw1qse', // Имя пользователя базы данных
+  password: '1CS4uN4E5JpuQvicL7yx', // Пароль от базы данных
+  database: 'bew2xcnjzsv0odbtvgjw', // Название базы данных
 });
 
 db.connect((err) => {
@@ -26,6 +27,104 @@ db.connect((err) => {
   }
   console.log('MySQL connected...');
 });
+
+// Создание таблиц и начального пользователя при запуске сервера
+const initDatabase = () => {
+  const createUsersTable = `
+    CREATE TABLE IF NOT EXISTS users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(255) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL,
+      role ENUM('admin', 'user') NOT NULL
+    )
+  `;
+
+  const createCustomersTable = `
+    CREATE TABLE IF NOT EXISTS customers (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      full_name VARCHAR(255) NOT NULL,
+      image VARCHAR(255),
+      phone VARCHAR(20),
+      email VARCHAR(255),
+      address TEXT,
+      company VARCHAR(255),
+      position VARCHAR(255),
+      birthdate DATE,
+      is_regular BOOLEAN DEFAULT FALSE,
+      notes TEXT
+    )
+  `;
+
+  const createForgeShopTable = `
+    CREATE TABLE IF NOT EXISTS forgeshop (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      image VARCHAR(255),
+      description TEXT NOT NULL,
+      weight DECIMAL(10, 2) NOT NULL,
+      length DECIMAL(10, 2) NOT NULL,
+      width DECIMAL(10, 2) NOT NULL,
+      height DECIMAL(10, 2) NOT NULL,
+      temperature INT NOT NULL,
+      is_completed BOOLEAN DEFAULT FALSE
+    )
+  `;
+
+  // Выполнение запросов для создания таблиц
+  db.query(createUsersTable, (err) => {
+    if (err) {
+      console.error('Error creating users table:', err.message);
+    } else {
+      console.log('Users table created or already exists.');
+    }
+  });
+
+  db.query(createCustomersTable, (err) => {
+    if (err) {
+      console.error('Error creating customers table:', err.message);
+    } else {
+      console.log('Customers table created or already exists.');
+    }
+  });
+
+  db.query(createForgeShopTable, (err) => {
+    if (err) {
+      console.error('Error creating forgeshop table:', err.message);
+    } else {
+      console.log('Forgeshop table created or already exists.');
+    }
+  });
+
+  // Проверка существования администратора и создание первого пользователя
+  const checkAdminQuery = 'SELECT COUNT(*) AS adminCount FROM users WHERE role = ?';
+  db.query(checkAdminQuery, ['admin'], async (err, result) => {
+    if (err) {
+      console.error('Error checking admin user:', err.message);
+      return;
+    }
+
+    const isAdminExists = result[0].adminCount > 0;
+    if (!isAdminExists) {
+      const hashedPassword = await bcrypt.hash('password', 10); // Хешируем пароль
+      const insertAdminQuery = `
+        INSERT INTO users (username, password, role)
+        VALUES (?, ?, ?)
+      `;
+      db.query(insertAdminQuery, ['admin', hashedPassword, 'admin'], (err) => {
+        if (err) {
+          console.error('Error creating admin user:', err.message);
+        } else {
+          console.log('Admin user created successfully.');
+        }
+      });
+    } else {
+      console.log('Admin user already exists.');
+    }
+  });
+};
+
+// Initialize the database on server start
+initDatabase();
 
 // JWT Secret
 const JWT_SECRET = 'f1d2e3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2'; // Замените на ваш секретный ключ
@@ -274,6 +373,16 @@ app.delete('/api/forgeshop/:id', authenticateToken, (req, res) => {
     }
     res.send('Item deleted successfully');
   });
+});
+
+
+// Serve static files from the Vue.js build
+const publicDir = path.join(__dirname, 'public');
+app.use(express.static(publicDir));
+
+// Catch-all route for SPA (должен быть последним!)
+app.use((req, res, next) => {
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // Start the server
