@@ -1,3 +1,4 @@
+require('dotenv').config(); // Загружаем переменные из .env файла
 const express = require('express');
 const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
@@ -7,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // Используем порт из .env или по умолчанию 5000
 
 // Middleware
 app.use(cors({
@@ -19,10 +20,10 @@ app.use(cookieParser());
 
 // MySQL connection details
 const db = mysql.createConnection({
-  host: 'bew2xcnjzsv0odbtvgjw-mysql.services.clever-cloud.com',
-  user: 'uuvziwe9prbw1qse',
-  password: '1CS4uN4E5JpuQvicL7yx',
-  database: 'bew2xcnjzsv0odbtvgjw',
+  host: process.env.DB_HOST, // Хост базы данных
+  user: process.env.DB_USER, // Имя пользователя базы данных
+  password: process.env.DB_PASSWORD, // Пароль от базы данных
+  database: process.env.DB_NAME, // Название базы данных
 });
 
 db.connect((err) => {
@@ -34,7 +35,7 @@ db.connect((err) => {
 });
 
 // JWT Secret
-const JWT_SECRET = 'f1d2e3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Убрана функция authenticateToken, так как аутентификация больше не требуется
 
@@ -48,7 +49,6 @@ const initDatabase = () => {
       role ENUM('admin', 'user') NOT NULL
     )
   `;
-
   const createCustomersTable = `
     CREATE TABLE IF NOT EXISTS customers (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -64,7 +64,6 @@ const initDatabase = () => {
       notes TEXT
     )
   `;
-
   const createForgeShopTable = `
     CREATE TABLE IF NOT EXISTS forgeshop (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -110,7 +109,6 @@ const initDatabase = () => {
       console.error('Error checking admin user:', err.message);
       return;
     }
-
     const isAdminExists = result[0].adminCount > 0;
     if (!isAdminExists) {
       const hashedPassword = await bcrypt.hash('password', 10);
@@ -136,23 +134,18 @@ initDatabase();
 // Registration (оставлено для возможного использования в будущем)
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
-
   if (!username || !password) {
     return res.status(400).send('Username and password are required');
   }
-
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-
     db.query('SELECT COUNT(*) AS adminCount FROM users WHERE role = ?', ['admin'], (err, result) => {
       if (err) {
         console.error('Database error during admin check:', err.message);
         return res.status(500).send('Database error');
       }
-
       const isAdmin = result[0].adminCount === 0;
       const role = isAdmin ? 'admin' : 'user';
-
       db.query(
         'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
         [username, hashedPassword, role],
@@ -174,40 +167,32 @@ app.post('/api/register', async (req, res) => {
 // Login (оставлено для возможного использования в будущем)
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
-
   if (!username || !password) {
     console.error('Missing username or password in login request');
     return res.status(400).send('Username and password are required');
   }
-
   db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
     if (err) {
       console.error('Database error during login:', err.message);
       return res.status(500).send('Database error');
     }
-
     if (results.length === 0) {
       console.error('User not found:', username);
       return res.status(400).send('Invalid credentials');
     }
-
     const user = results[0];
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) {
       console.error('Invalid password for user:', username);
       return res.status(400).send('Invalid credentials');
     }
-
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
-
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 3600000,
     });
-
     console.log('Login successful for user:', username);
     res.json({ message: 'Login successful', role: user.role });
   });
