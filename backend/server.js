@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const cookieParser = require('cookie-parser'); // Для работы с куками
+const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const app = express();
@@ -11,43 +11,32 @@ const PORT = 5000;
 
 // Middleware
 app.use(cors({
-  origin: true, // Разрешаем CORS
-  credentials: true, // Разрешаем отправку куков
+  origin: true,
+  credentials: true,
 }));
 app.use(express.json());
-app.use(cookieParser()); // Добавляем парсер для куков
+app.use(cookieParser());
 
 // MySQL connection details
 const db = mysql.createConnection({
-  host: 'bew2xcnjzsv0odbtvgjw-mysql.services.clever-cloud.com', // Хост базы данных
-  user: 'uuvziwe9prbw1qse', // Имя пользователя базы данных
-  password: '1CS4uN4E5JpuQvicL7yx', // Пароль от базы данных
-  database: 'bew2xcnjzsv0odbtvgjw', // Название базы данных
+  host: 'bew2xcnjzsv0odbtvgjw-mysql.services.clever-cloud.com',
+  user: 'uuvziwe9prbw1qse',
+  password: '1CS4uN4E5JpuQvicL7yx',
+  database: 'bew2xcnjzsv0odbtvgjw',
 });
 
 db.connect((err) => {
   if (err) {
     console.error('Error connecting to MySQL:', err.message);
-    process.exit(1); // Завершаем процесс, если ошибка
+    process.exit(1);
   }
   console.log('MySQL connected...');
 });
 
 // JWT Secret
-const JWT_SECRET = 'f1d2e3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2'; // Замените на ваш секретный ключ
+const JWT_SECRET = 'f1d2e3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2';
 
-// Helper function to verify JWT from cookies
-function authenticateToken(req, res, next) {
-  const token = req.cookies.token; // Читаем токен из куков
-
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
+// Убрана функция authenticateToken, так как аутентификация больше не требуется
 
 // Создание таблиц и начального пользователя при запуске сервера
 const initDatabase = () => {
@@ -91,7 +80,6 @@ const initDatabase = () => {
     )
   `;
 
-  // Выполнение запросов для создания таблиц
   db.query(createUsersTable, (err) => {
     if (err) {
       console.error('Error creating users table:', err.message);
@@ -116,7 +104,6 @@ const initDatabase = () => {
     }
   });
 
-  // Проверка существования администратора и создание первого пользователя
   const checkAdminQuery = 'SELECT COUNT(*) AS adminCount FROM users WHERE role = ?';
   db.query(checkAdminQuery, ['admin'], async (err, result) => {
     if (err) {
@@ -126,7 +113,7 @@ const initDatabase = () => {
 
     const isAdminExists = result[0].adminCount > 0;
     if (!isAdminExists) {
-      const hashedPassword = await bcrypt.hash('password', 10); // Хешируем пароль
+      const hashedPassword = await bcrypt.hash('password', 10);
       const insertAdminQuery = `
         INSERT INTO users (username, password, role)
         VALUES (?, ?, ?)
@@ -144,10 +131,9 @@ const initDatabase = () => {
   });
 };
 
-// Initialize the database on server start
 initDatabase();
 
-// Registration
+// Registration (оставлено для возможного использования в будущем)
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
 
@@ -185,7 +171,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// Login
+// Login (оставлено для возможного использования в будущем)
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
@@ -227,22 +213,22 @@ app.post('/api/login', (req, res) => {
   });
 });
 
-// Logout
+// Logout (оставлено для возможного использования в будущем)
 app.post('/api/logout', (req, res) => {
   res.clearCookie('token');
   res.json({ message: 'Logout successful' });
 });
 
-// Получение всех клиентов
-app.get('/api/customers', authenticateToken, (req, res) => {
+// Получение всех клиентов (без аутентификации)
+app.get('/api/customers', (req, res) => {
   db.query('SELECT * FROM customers', (err, results) => {
     if (err) return res.status(500).send('Database error');
     res.json(results);
   });
 });
 
-// Получение клиента по ID
-app.get('/api/customers/:id', authenticateToken, (req, res) => {
+// Получение клиента по ID (без аутентификации)
+app.get('/api/customers/:id', (req, res) => {
   const { id } = req.params;
   db.query('SELECT * FROM customers WHERE id = ?', [id], (err, results) => {
     if (err) return res.status(500).send('Database error');
@@ -251,8 +237,8 @@ app.get('/api/customers/:id', authenticateToken, (req, res) => {
   });
 });
 
-// Создание нового клиента
-app.post('/api/customers', authenticateToken, (req, res) => {
+// Создание нового клиента (без аутентификации)
+app.post('/api/customers', (req, res) => {
   const { full_name, image, phone, email, address, company, position, birthdate, is_regular, notes } = req.body;
   const query = `
     INSERT INTO customers (full_name, image, phone, email, address, company, position, birthdate, is_regular, notes)
@@ -268,8 +254,8 @@ app.post('/api/customers', authenticateToken, (req, res) => {
   );
 });
 
-// Обновление клиента
-app.put('/api/customers/:id', authenticateToken, (req, res) => {
+// Обновление клиента (без аутентификации)
+app.put('/api/customers/:id', (req, res) => {
   const { id } = req.params;
   const { full_name, image, phone, email, address, company, position, birthdate, is_regular, notes } = req.body;
   const query = `
@@ -287,8 +273,8 @@ app.put('/api/customers/:id', authenticateToken, (req, res) => {
   );
 });
 
-// Удаление клиента
-app.delete('/api/customers/:id', authenticateToken, (req, res) => {
+// Удаление клиента (без аутентификации)
+app.delete('/api/customers/:id', (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM customers WHERE id = ?', [id], (err) => {
     if (err) return res.status(500).send('Database error');
@@ -296,9 +282,8 @@ app.delete('/api/customers/:id', authenticateToken, (req, res) => {
   });
 });
 
-// **API для ForgeShop**
-// Получение всех товаров
-app.get('/api/forgeshop', authenticateToken, (req, res) => {
+// Получение всех товаров (без аутентификации)
+app.get('/api/forgeshop', (req, res) => {
   db.query('SELECT * FROM forgeshop', (err, results) => {
     if (err) {
       console.error('Database error during fetching all items:', err.message);
@@ -308,8 +293,8 @@ app.get('/api/forgeshop', authenticateToken, (req, res) => {
   });
 });
 
-// Получение товара по ID
-app.get('/api/forgeshop/:id', authenticateToken, (req, res) => {
+// Получение товара по ID (без аутентификации)
+app.get('/api/forgeshop/:id', (req, res) => {
   const { id } = req.params;
   db.query('SELECT * FROM forgeshop WHERE id = ?', [id], (err, results) => {
     if (err) {
@@ -323,8 +308,8 @@ app.get('/api/forgeshop/:id', authenticateToken, (req, res) => {
   });
 });
 
-// Создание нового товара
-app.post('/api/forgeshop', authenticateToken, (req, res) => {
+// Создание нового товара (без аутентификации)
+app.post('/api/forgeshop', (req, res) => {
   const { name, image, description, weight, length, width, height, temperature, is_completed } = req.body;
 
   if (!name || !image || !description || weight == null || length == null || width == null || height == null || temperature == null || is_completed == null) {
@@ -343,12 +328,12 @@ app.post('/api/forgeshop', authenticateToken, (req, res) => {
     res.status(201).send('Item created successfully');
   });
 });
-// Обновление товара
-app.put('/api/forgeshop/:id', authenticateToken, (req, res) => {
+
+// Обновление товара (без аутентификации)
+app.put('/api/forgeshop/:id', (req, res) => {
   const { id } = req.params;
   const { name, image, description, weight, length, width, height, temperature, is_completed } = req.body;
 
-  // Проверяем, что все обязательные поля заполнены
   if (!name || !image || !description || weight == null || length == null || width == null || height == null || temperature == null || is_completed == null) {
     return res.status(400).send('Missing required fields');
   }
@@ -372,8 +357,8 @@ app.put('/api/forgeshop/:id', authenticateToken, (req, res) => {
   );
 });
 
-// Удаление товара
-app.delete('/api/forgeshop/:id', authenticateToken, (req, res) => {
+// Удаление товара (без аутентификации)
+app.delete('/api/forgeshop/:id', (req, res) => {
   const { id } = req.params;
 
   db.query('DELETE FROM forgeshop WHERE id = ?', [id], (err) => {
@@ -389,7 +374,7 @@ app.delete('/api/forgeshop/:id', authenticateToken, (req, res) => {
 const publicDir = path.join(__dirname, 'public');
 app.use(express.static(publicDir));
 
-// Catch-all route for SPA (должен быть последним!)
+// Catch-all route for SPA
 app.use((req, res, next) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
