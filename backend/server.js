@@ -3,14 +3,19 @@ const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const cookieParser = require('cookie-parser'); // Для работы с куками
 const path = require('path');
 
 const app = express();
 const PORT = 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: true, // Разрешаем CORS
+  credentials: true, // Разрешаем отправку куков
+}));
 app.use(express.json());
+app.use(cookieParser()); // Добавляем парсер для куков
 
 // MySQL connection details
 const db = mysql.createConnection({
@@ -27,6 +32,22 @@ db.connect((err) => {
   }
   console.log('MySQL connected...');
 });
+
+// JWT Secret
+const JWT_SECRET = 'f1d2e3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2'; // Замените на ваш секретный ключ
+
+// Helper function to verify JWT from cookies
+function authenticateToken(req, res, next) {
+  const token = req.cookies.token; // Читаем токен из куков
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
 
 // Создание таблиц и начального пользователя при запуске сервера
 const initDatabase = () => {
@@ -126,46 +147,26 @@ const initDatabase = () => {
 // Initialize the database on server start
 initDatabase();
 
-// JWT Secret
-const JWT_SECRET = 'f1d2e3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2'; // Замените на ваш секретный ключ
-
-// Helper function to verify JWT
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
-
 // Registration
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
 
-  // Проверяем, что username и password переданы
   if (!username || !password) {
     return res.status(400).send('Username and password are required');
   }
 
   try {
-    // Хешируем пароль
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Проверяем, есть ли уже администратор
     db.query('SELECT COUNT(*) AS adminCount FROM users WHERE role = ?', ['admin'], (err, result) => {
       if (err) {
         console.error('Database error during admin check:', err.message);
         return res.status(500).send('Database error');
       }
 
-      const isAdmin = result[0].adminCount === 0; // Первый пользователь становится админом
+      const isAdmin = result[0].adminCount === 0;
       const role = isAdmin ? 'admin' : 'user';
 
-      // Добавляем пользователя в базу данных
       db.query(
         'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
         [username, hashedPassword, role],
@@ -206,16 +207,30 @@ app.post('/api/login', (req, res) => {
 
     const user = results[0];
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       console.error('Invalid password for user:', username);
       return res.status(400).send('Invalid credentials');
     }
 
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
-    console.log('Login successful for user:', username);
 
-    res.json({ token, role: user.role });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 3600000,
+    });
+
+    console.log('Login successful for user:', username);
+    res.json({ message: 'Login successful', role: user.role });
   });
+});
+
+// Logout
+app.post('/api/logout', (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Logout successful' });
 });
 
 // Получение всех клиентов
@@ -282,7 +297,6 @@ app.delete('/api/customers/:id', authenticateToken, (req, res) => {
 });
 
 // **API для ForgeShop**
-
 // Получение всех товаров
 app.get('/api/forgeshop', authenticateToken, (req, res) => {
   db.query('SELECT * FROM forgeshop', (err, results) => {
@@ -313,7 +327,6 @@ app.get('/api/forgeshop/:id', authenticateToken, (req, res) => {
 app.post('/api/forgeshop', authenticateToken, (req, res) => {
   const { name, image, description, weight, length, width, height, temperature, is_completed } = req.body;
 
-  // Проверяем, что все обязательные поля заполнены
   if (!name || !image || !description || weight == null || length == null || width == null || height == null || temperature == null || is_completed == null) {
     return res.status(400).send('Missing required fields');
   }
@@ -322,18 +335,14 @@ app.post('/api/forgeshop', authenticateToken, (req, res) => {
     INSERT INTO forgeshop (name, image, description, weight, length, width, height, temperature, is_completed)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
-
   db.query(query, [name, image, description, weight, length, width, height, temperature, is_completed], (err) => {
     if (err) {
       console.error('Database error during item creation:', err.message);
-      console.error('Query:', query); // Логируем запрос
-      console.error('Parameters:', [name, image, description, weight, length, width, height, temperature, is_completed]); // Логируем параметры
       return res.status(500).send('Database error');
     }
     res.status(201).send('Item created successfully');
   });
 });
-
 // Обновление товара
 app.put('/api/forgeshop/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -366,6 +375,7 @@ app.put('/api/forgeshop/:id', authenticateToken, (req, res) => {
 // Удаление товара
 app.delete('/api/forgeshop/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
+
   db.query('DELETE FROM forgeshop WHERE id = ?', [id], (err) => {
     if (err) {
       console.error('Database error during item deletion:', err.message);
@@ -374,7 +384,6 @@ app.delete('/api/forgeshop/:id', authenticateToken, (req, res) => {
     res.send('Item deleted successfully');
   });
 });
-
 
 // Serve static files from the Vue.js build
 const publicDir = path.join(__dirname, 'public');
