@@ -3,7 +3,7 @@
     <h1>Кузнечные изделия</h1>
 
     <!-- Кнопка "Создать новый товар" -->
-    <div v-if="isAdmin">
+    <div>
       <router-link to="/forgeshop/create" class="btn-create">Добавить новый товар</router-link>
     </div>
 
@@ -25,7 +25,7 @@
       </thead>
       <tbody>
         <tr v-for="item in paginatedItems" :key="item.id">
-          <td>{{ item.name }}</td> <!-- Исправлено: name вместо Name -->
+          <td>{{ item.name }}</td>
           <td>
             <img
               v-if="item.image"
@@ -41,15 +41,13 @@
           <td>{{ item.width }}</td>
           <td>{{ item.height }}</td>
           <td>{{ item.temperature }}</td>
-          <td>{{ item.is_completed ? 'Да' : 'Нет' }}</td> <!-- Исправлено: is_completed -->
+          <td>{{ item.is_completed ? 'Да' : 'Нет' }}</td>
           <td>
             <router-link :to="`/forgeshop/${item.id}`">Подробности</router-link>
-            <span v-if="isAdmin">
-              |
-              <router-link :to="`/forgeshop/${item.id}/edit`">Редактировать</router-link>
-              |
-              <button @click="deleteItem(item.id)" class="btn-delete">Удалить</button>
-            </span>
+            |
+            <router-link :to="`/forgeshop/${item.id}/edit`">Редактировать</router-link>
+            |
+            <button @click="deleteItem(item.id)" class="btn-delete">Удалить</button>
           </td>
         </tr>
       </tbody>
@@ -108,11 +106,6 @@ export default {
       }
       return pages;
     },
-    isAdmin() {
-      // Проверяем, является ли роль пользователя "admin"
-      const userRole = localStorage.getItem('role'); // Получаем роль из localStorage
-      return userRole === 'admin';
-    },
   },
   async created() {
     await this.fetchItems();
@@ -122,9 +115,7 @@ export default {
     async fetchItems() {
       try {
         console.log('Загружаем товары...'); // Отладочный вывод
-        const response = await fetch('http://localhost:5000/api/forgeshop', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+        const response = await fetch('http://localhost:5000/api/forgeshop');
         if (!response.ok) throw new Error('Не удалось загрузить товары');
         this.items = await response.json();
         console.log('Полученные данные:', this.items); // Отладочный вывод
@@ -155,20 +146,6 @@ export default {
         this.updatePaginatedItems();
       }
     },
-    async deleteItem(id) {
-      try {
-        console.log(`Удаляем товар с ID: ${id}`); // Отладочный вывод
-        const response = await fetch(`http://localhost:5000/api/forgeshop/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        if (!response.ok) throw new Error('Не удалось удалить товар');
-        this.items = this.items.filter((item) => item.id !== id);
-        this.updatePaginatedItems();
-      } catch (error) {
-        console.error('Ошибка при удалении товара:', error.message);
-      }
-    },
     getItemImage(imageName) {
       if (!imageName) return '/images/placeholder.jpg'; // Запасное изображение
       const supportedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
@@ -178,6 +155,18 @@ export default {
       } else {
         console.warn(`Unsupported image format: ${fileExtension}`);
         return '/images/placeholder.jpg';
+      }
+    },
+    async deleteItem(id) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/forgeshop/${id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) throw new Error('Не удалось удалить товар');
+        this.items = this.items.filter((item) => item.id !== id);
+        this.updatePaginatedItems();
+      } catch (error) {
+        console.error('Ошибка при удалении товара:', error.message);
       }
     },
   },

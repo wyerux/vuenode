@@ -3,7 +3,7 @@
     <h1>Клиенты</h1>
 
     <!-- Кнопка "Создать нового клиента" -->
-    <div v-if="isAdmin">
+    <div>
       <router-link to="/customers/create" class="btn-create">Создать нового клиента</router-link>
     </div>
 
@@ -46,12 +46,10 @@
           <td>{{ customer.notes || 'Нет данных' }}</td>
           <td>
             <router-link :to="`/customers/${customer.id}`">Подробности</router-link>
-            <span v-if="isAdmin">
-              |
-              <router-link :to="`/customers/${customer.id}/edit`">Редактировать</router-link>
-              |
-              <button @click="deleteCustomer(customer.id)" class="btn-delete">Удалить</button>
-            </span>
+            |
+            <router-link :to="`/customers/${customer.id}/edit`">Редактировать</router-link>
+            |
+            <button @click="deleteCustomer(customer.id)" class="btn-delete">Удалить</button>
           </td>
         </tr>
       </tbody>
@@ -110,11 +108,6 @@ export default {
       }
       return pages;
     },
-    isAdmin() {
-      // Проверяем, является ли роль пользователя "admin"
-      const userRole = localStorage.getItem('role'); // Получаем роль из localStorage
-      return userRole === 'admin';
-    },
   },
   async created() {
     await this.fetchCustomers();
@@ -123,9 +116,7 @@ export default {
   methods: {
     async fetchCustomers() {
       try {
-        const response = await fetch('http://localhost:5000/api/customers', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+        const response = await fetch('http://localhost:5000/api/customers');
         if (!response.ok) throw new Error('Не удалось загрузить клиентов');
         this.customers = await response.json();
       } catch (error) {
@@ -155,19 +146,6 @@ export default {
         this.updatePaginatedCustomers();
       }
     },
-    async deleteCustomer(id) {
-      try {
-        const response = await fetch(`http://localhost:5000/api/customers/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        if (!response.ok) throw new Error('Не удалось удалить клиента');
-        this.customers = this.customers.filter((c) => c.id !== id);
-        this.updatePaginatedCustomers();
-      } catch (error) {
-        console.error(error.message);
-      }
-    },
     getCustomerImage(imageName) {
       if (!imageName) return '/images/placeholder.jpg'; // Запасное изображение
       const supportedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
@@ -183,6 +161,18 @@ export default {
       if (!date) return 'Нет данных';
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(date).toLocaleDateString('ru-RU', options);
+    },
+    async deleteCustomer(id) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/customers/${id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) throw new Error('Не удалось удалить клиента');
+        this.customers = this.customers.filter((c) => c.id !== id);
+        this.updatePaginatedCustomers();
+      } catch (error) {
+        console.error(error.message);
+      }
     },
   },
 };
