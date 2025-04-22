@@ -18,12 +18,13 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// MySQL connection details
+// MySQL connection details (используем переменные из .env)
 const db = mysql.createConnection({
-  host: process.env.DB_HOST, // Хост базы данных
-  user: process.env.DB_USER, // Имя пользователя базы данных
-  password: process.env.DB_PASSWORD, // Пароль от базы данных
-  database: process.env.DB_NAME, // Название базы данных
+  host: process.env.MYSQL_ADDON_HOST, // Хост базы данных
+  user: process.env.MYSQL_ADDON_USER, // Имя пользователя базы данных
+  password: process.env.MYSQL_ADDON_PASSWORD, // Пароль от базы данных
+  database: process.env.MYSQL_ADDON_DB, // Название базы данных
+  port: process.env.MYSQL_ADDON_PORT, // Порт базы данных
 });
 
 db.connect((err) => {
