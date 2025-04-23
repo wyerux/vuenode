@@ -132,7 +132,7 @@ const initDatabase = () => {
 
 initDatabase();
 
-// Registration (оставлено для возможного использования в будущем)
+// Registration (активировано)
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -165,7 +165,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// Login (оставлено для возможного использования в будущем)
+// Login (активировано)
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -199,11 +199,12 @@ app.post('/api/login', (req, res) => {
   });
 });
 
-// Logout (оставлено для возможного использования в будущем)
+// Logout (активировано)
 app.post('/api/logout', (req, res) => {
   res.clearCookie('token');
   res.json({ message: 'Logout successful' });
 });
+
 
 // Получение всех клиентов (без аутентификации)
 app.get('/api/customers', (req, res) => {
