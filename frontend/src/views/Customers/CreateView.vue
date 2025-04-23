@@ -107,7 +107,7 @@ export default {
     },
     async createCustomer() {
       try {
-        const response = await fetch('http://localhost:5000/api/customers', {
+        const response = await fetch('/api/customers', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

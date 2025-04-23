@@ -102,7 +102,7 @@ export default {
       try {
         console.log('Отправляем данные:', this.item); // Отладочный вывод
 
-        const response = await fetch('http://localhost:5000/api/forgeshop', {
+        const response = await fetch('/api/forgeshop', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

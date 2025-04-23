@@ -41,7 +41,7 @@ export default {
   methods: {
     async fetchCustomer() {
       try {
-        const response = await fetch(`http://localhost:5000/api/customers/${this.$route.params.id}`, {
+        const response = await fetch(`/api/customers/${this.$route.params.id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         if (!response.ok) throw new Error('Не удалось загрузить данные клиента');

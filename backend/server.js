@@ -1,4 +1,3 @@
-require('dotenv').config(); // Загружаем переменные из .env файла
 const express = require('express');
 const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
@@ -6,9 +5,8 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-
 const app = express();
-const PORT = process.env.PORT || 5000; // Используем порт из .env или по умолчанию 5000
+const PORT = 5000; // Установлен порт напрямую
 
 // Middleware
 app.use(cors({
@@ -18,13 +16,13 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// MySQL connection details (используем переменные из .env)
+// MySQL connection details (используем значения из .env)
 const db = mysql.createConnection({
-  host: process.env.MYSQL_ADDON_HOST, // Хост базы данных
-  user: process.env.MYSQL_ADDON_USER, // Имя пользователя базы данных
-  password: process.env.MYSQL_ADDON_PASSWORD, // Пароль от базы данных
-  database: process.env.MYSQL_ADDON_DB, // Название базы данных
-  port: process.env.MYSQL_ADDON_PORT, // Порт базы данных
+  host: 'bstcg9ifznrw4wz9k0x1-mysql.services.clever-cloud.com', // Хост базы данных
+  user: 'uw40ayuqhrvzbokd', // Имя пользователя базы данных
+  password: '2zNddQptA5Y0y1IbrTJA', // Пароль от базы данных
+  database: 'bstcg9ifznrw4wz9k0x1', // Название базы данных
+  port: 3306, // Порт базы данных
 });
 
 db.connect((err) => {
@@ -36,10 +34,9 @@ db.connect((err) => {
 });
 
 // JWT Secret
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = 'f1d2e3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2';
 
 // Убрана функция authenticateToken, так как аутентификация больше не требуется
-
 // Создание таблиц и начального пользователя при запуске сервера
 const initDatabase = () => {
   const createUsersTable = `
@@ -79,7 +76,6 @@ const initDatabase = () => {
       is_completed BOOLEAN DEFAULT FALSE
     )
   `;
-
   db.query(createUsersTable, (err) => {
     if (err) {
       console.error('Error creating users table:', err.message);
@@ -87,7 +83,6 @@ const initDatabase = () => {
       console.log('Users table created or already exists.');
     }
   });
-
   db.query(createCustomersTable, (err) => {
     if (err) {
       console.error('Error creating customers table:', err.message);
@@ -95,7 +90,6 @@ const initDatabase = () => {
       console.log('Customers table created or already exists.');
     }
   });
-
   db.query(createForgeShopTable, (err) => {
     if (err) {
       console.error('Error creating forgeshop table:', err.message);
@@ -103,7 +97,6 @@ const initDatabase = () => {
       console.log('Forgeshop table created or already exists.');
     }
   });
-
   const checkAdminQuery = 'SELECT COUNT(*) AS adminCount FROM users WHERE role = ?';
   db.query(checkAdminQuery, ['admin'], async (err, result) => {
     if (err) {
@@ -190,7 +183,7 @@ app.post('/api/login', (req, res) => {
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Установлено false для разработки
       sameSite: 'strict',
       maxAge: 3600000,
     });
@@ -204,7 +197,6 @@ app.post('/api/logout', (req, res) => {
   res.clearCookie('token');
   res.json({ message: 'Logout successful' });
 });
-
 
 // Получение всех клиентов (без аутентификации)
 app.get('/api/customers', (req, res) => {
@@ -298,11 +290,9 @@ app.get('/api/forgeshop/:id', (req, res) => {
 // Создание нового товара (без аутентификации)
 app.post('/api/forgeshop', (req, res) => {
   const { name, image, description, weight, length, width, height, temperature, is_completed } = req.body;
-
   if (!name || !image || !description || weight == null || length == null || width == null || height == null || temperature == null || is_completed == null) {
     return res.status(400).send('Missing required fields');
   }
-
   const query = `
     INSERT INTO forgeshop (name, image, description, weight, length, width, height, temperature, is_completed)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -320,17 +310,14 @@ app.post('/api/forgeshop', (req, res) => {
 app.put('/api/forgeshop/:id', (req, res) => {
   const { id } = req.params;
   const { name, image, description, weight, length, width, height, temperature, is_completed } = req.body;
-
   if (!name || !image || !description || weight == null || length == null || width == null || height == null || temperature == null || is_completed == null) {
     return res.status(400).send('Missing required fields');
   }
-
   const query = `
     UPDATE forgeshop
     SET name = ?, image = ?, description = ?, weight = ?, length = ?, width = ?, height = ?, temperature = ?, is_completed = ?
     WHERE id = ?
   `;
-
   db.query(
     query,
     [name, image, description, weight, length, width, height, temperature, is_completed, id],
@@ -347,7 +334,6 @@ app.put('/api/forgeshop/:id', (req, res) => {
 // Удаление товара (без аутентификации)
 app.delete('/api/forgeshop/:id', (req, res) => {
   const { id } = req.params;
-
   db.query('DELETE FROM forgeshop WHERE id = ?', [id], (err) => {
     if (err) {
       console.error('Database error during item deletion:', err.message);

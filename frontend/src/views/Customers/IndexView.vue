@@ -2,8 +2,8 @@
   <div class="container">
     <h1>Клиенты</h1>
 
-    <!-- Кнопка "Создать нового клиента" -->
-    <div>
+    <!-- Кнопка "Создать нового клиента" (доступна только администраторам) -->
+    <div v-if="isAdmin">
       <router-link to="/customers/create" class="btn-create">Создать нового клиента</router-link>
     </div>
 
@@ -16,8 +16,6 @@
           <th>Телефон</th>
           <th>Email</th>
           <th>Адрес</th>
-          <th>Компания</th>
-          <th>Должность</th>
           <th>Дата рождения</th>
           <th>Постоянный клиент</th>
           <th>Примечания</th>
@@ -39,17 +37,15 @@
           <td>{{ customer.phone }}</td>
           <td>{{ customer.email }}</td>
           <td>{{ customer.address }}</td>
-          <td>{{ customer.company }}</td>
-          <td>{{ customer.position }}</td>
           <td>{{ formatDate(customer.birthdate) }}</td>
           <td>{{ customer.is_regular ? 'Да' : 'Нет' }}</td>
           <td>{{ customer.notes || 'Нет данных' }}</td>
           <td>
             <router-link :to="`/customers/${customer.id}`">Подробности</router-link>
             |
-            <router-link :to="`/customers/${customer.id}/edit`">Редактировать</router-link>
+            <router-link v-if="isAdmin" :to="`/customers/${customer.id}/edit`">Редактировать</router-link>
             |
-            <button @click="deleteCustomer(customer.id)" class="btn-delete">Удалить</button>
+            <button v-if="isAdmin" @click="deleteCustomer(customer.id)" class="btn-delete">Удалить</button>
           </td>
         </tr>
       </tbody>
@@ -93,6 +89,7 @@ export default {
       paginatedCustomers: [], // Клиенты для текущей страницы
       currentPage: 1, // Текущая страница
       pageSize: 10, // Количество записей на странице
+      userRole: null, // Роль текущего пользователя
     };
   },
   computed: {
@@ -108,15 +105,27 @@ export default {
       }
       return pages;
     },
+    isAdmin() {
+      return this.userRole === 'admin'; // Проверяем, является ли пользователь администратором
+    },
   },
   async created() {
+    await this.checkAuth(); // Проверяем авторизацию
     await this.fetchCustomers();
     this.updatePaginatedCustomers();
   },
   methods: {
+    checkAuth() {
+      const role = localStorage.getItem('role'); // Получаем роль из localStorage
+      if (role) {
+        this.userRole = role; // Устанавливаем роль пользователя
+      } else {
+        this.userRole = null; // Если роль отсутствует, пользователь не авторизован
+      }
+    },
     async fetchCustomers() {
       try {
-        const response = await fetch('http://localhost:5000/api/customers');
+        const response = await fetch('/api/customers');
         if (!response.ok) throw new Error('Не удалось загрузить клиентов');
         this.customers = await response.json();
       } catch (error) {
@@ -164,7 +173,7 @@ export default {
     },
     async deleteCustomer(id) {
       try {
-        const response = await fetch(`http://localhost:5000/api/customers/${id}`, {
+        const response = await fetch(`/api/customers/${id}`, {
           method: 'DELETE',
         });
         if (!response.ok) throw new Error('Не удалось удалить клиента');
