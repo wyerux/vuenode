@@ -17,7 +17,6 @@
           <th>Email</th>
           <th>Адрес</th>
           <th>Возраст</th>
-          <th>Профессия</th>
           <th>Описание</th>
           <th>Фото</th>
           <th>Действия</th>
@@ -31,7 +30,6 @@
           <td>{{ client.email }}</td>
           <td>{{ client.address || 'Нет данных' }}</td>
           <td>{{ client.age }}</td>
-          <td>{{ client.profession || 'Нет данных' }}</td>
           <td>{{ client.description || 'Нет данных' }}</td>
           <td>
             <img
@@ -184,14 +182,3 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Принудительное применение стилей */
-table .client-image {
-  max-width: 50px !important;
-  height: auto !important;
-  border-radius: 8px !important;
-  object-fit: cover !important;
-  display: block !important;
-  margin: 0 auto !important;
-}
-</style>
