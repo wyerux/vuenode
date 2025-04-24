@@ -1,78 +1,84 @@
 const { faker } = require('@faker-js/faker'); // Импортируем faker
 const mysql = require('mysql2');
 
-// Создаем подключение к базе данных
+// MySQL connection details (используем значения из .env)
 const db = mysql.createConnection({
-  host: 'bstcg9ifznrw4wz9k0x1-mysql.services.clever-cloud.com', // Хост базы данных
-  user: 'uw40ayuqhrvzbokd', // Имя пользователя базы данных
-  password: '2zNddQptA5Y0y1IbrTJA', // Пароль от базы данных
-  database: 'bstcg9ifznrw4wz9k0x1', // Название базы данных
+  host: 'br7ht48k7h1bbkpcjwzg-mysql.services.clever-cloud.com', // Хост базы данных
+  user: 'uhxjw67kxkzjkg05', // Имя пользователя базы данных
+  password: 'vlGkJwj7djnacMwi20IE', // Пароль от базы данных
+  database: 'br7ht48k7h1bbkpcjwzg', // Название базы данных
+  port: 3306, // Порт базы данных
 });
+
 
 // Функция для генерации случайного числа в диапазоне
 function getRandomNumber(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-// Генерация данных для таблицы forgeshop
-async function seedForgeShop() {
-  const items = [];
+// Списки изображений для таблиц
+const clientImages = ['cli.png', 'cli1.png', 'cli2.png', 'cli3.png', 'cli4.png', 'cli5.png'];
+const apartmentImages = ['kv.png', 'kv2.png', 'kv3.png', 'kv4.png'];
+
+// Генерация данных для таблицы apartments
+async function seedApartments() {
+  const apartments = [];
   for (let i = 0; i < 100; i++) {
-    items.push([
-      `Product ${i + 1}`, // name
-      'guz1.png',         // image (фиксированное имя файла)
-      `Description for product ${i + 1}`, // description
-      getRandomNumber(0.5, 50).toFixed(2), // weight (кг)
-      getRandomNumber(10, 200).toFixed(2), // length (см)
-      getRandomNumber(5, 100).toFixed(2),  // width (см)
-      getRandomNumber(5, 100).toFixed(2),  // height (см)
-      faker.number.int({ min: 100, max: 1000 }), // temperature (°C)
-      Math.random() < 0.5, // is_completed (случайное значение true/false)
+    apartments.push([
+      faker.location.streetAddress(), // address
+      faker.number.int({ min: 1, max: 5 }), // rooms
+      getRandomNumber(30, 200).toFixed(2), // total_area (м²)
+      faker.number.int({ min: 1, max: 20 }), // floor
+      faker.number.int({ min: 5, max: 30 }), // floors_in_building
+      getRandomNumber(1000000, 10000000).toFixed(2), // price (₽)
+      faker.helpers.arrayElement(['Косметический', 'Капитальный', 'Евро']), // renovation_type
+      faker.lorem.sentence(), // description
+      apartmentImages[i % apartmentImages.length], // photo_path (фиксированные изображения)
     ]);
   }
 
   const query = `
-    INSERT INTO forgeshop (name, image, description, weight, length, width, height, temperature, is_completed)
+    INSERT INTO apartments (address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path)
     VALUES ?
   `;
 
-  db.query(query, [items], (err) => {
+  db.query(query, [apartments], (err) => {
     if (err) {
-      console.error('Ошибка при заполнении таблицы forgeshop:', err.message);
+      console.error('Ошибка при заполнении таблицы apartments:', err.message);
     } else {
-      console.log('Таблица forgeshop успешно заполнена 100 записями.');
+      console.log('Таблица apartments успешно заполнена 100 записями.');
     }
   });
 }
 
-// Генерация данных для таблицы customers
-async function seedCustomers() {
-  const customers = [];
+// Генерация данных для таблицы clients
+async function seedClients() {
+  const clients = [];
   for (let i = 0; i < 100; i++) {
-    customers.push([
-      `Customer ${i + 1}`, // full_name
-      'cus1.png',          // image (фиксированное имя файла)
-      `+123456789${i}`,    // phone (уникальный номер)
-      `customer${i + 1}@example.com`, // email
-      `Address ${i + 1}`,  // address
-      `Company ${i + 1}`,  // company
-      `Position ${i + 1}`, // position
-      '1990-01-01',         // birthdate (фиксированная дата)
-      Math.random() < 0.5,  // is_regular (случайное значение true/false)
-      `Notes for customer ${i + 1}`, // notes
+    const phoneNumber = faker.phone.number('+7 (###) ###-##-##').slice(0, 20); // Ограничиваем длину до 20 символов
+    clients.push([
+      faker.person.firstName(), // first_name
+      faker.person.lastName(), // last_name
+      phoneNumber, // phone_number
+      faker.internet.email(), // email
+      faker.location.streetAddress(), // address
+      faker.number.int({ min: 18, max: 80 }), // age
+      faker.helpers.arrayElement(['Программист', 'Дизайнер', 'Менеджер', 'Врач', 'Учитель']), // profession
+      faker.lorem.sentence(), // description
+      clientImages[i % clientImages.length], // photo_path (фиксированные изображения)
     ]);
   }
 
   const query = `
-    INSERT INTO customers (full_name, image, phone, email, address, company, position, birthdate, is_regular, notes)
+    INSERT INTO clients (first_name, last_name, phone_number, email, address, age, profession, description, photo_path)
     VALUES ?
   `;
 
-  db.query(query, [customers], (err) => {
+  db.query(query, [clients], (err) => {
     if (err) {
-      console.error('Ошибка при заполнении таблицы customers:', err.message);
+      console.error('Ошибка при заполнении таблицы clients:', err.message);
     } else {
-      console.log('Таблица customers успешно заполнена 100 записями.');
+      console.log('Таблица clients успешно заполнена 100 записями.');
     }
   });
 }
@@ -86,6 +92,6 @@ db.connect((err) => {
   console.log('Подключено к базе данных.');
 
   // Заполняем таблицы
-  seedForgeShop();
-  seedCustomers();
+  seedApartments();
+  seedClients();
 });

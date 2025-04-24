@@ -1,23 +1,59 @@
 <template>
   <div class="container">
-    <h1>Главная</h1>
-    <p>Добро пожаловать в кузнечный цех "Стальная душа"!</p>
-    <p>Мы создаем уникальные кованые изделия уже более 10 лет.</p>
+    <h1>Главная - Продажа квартир</h1>
 
-    <div class="row">
-      <div class="col-md-4">
-        <img src="../assets/images/forge1.jpg" alt="Кузнец за работой" class="img-responsive" />
-        <p>Кузнец за работой: каждая деталь создается с душой.</p>
-      </div>
-      <div class="col-md-4">
-        <img src="../assets/images/forge2.jpg" alt="Готовые изделия" class="img-responsive" />
-        <p>Готовые изделия: сочетание красоты и прочности.</p>
-      </div>
-      <div class="col-md-4">
-        <img src="../assets/images/forge3.jpg" alt="Интерьер цеха" class="img-responsive" />
-        <p>Интерьер цеха: место, где рождаются шедевры.</p>
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-overlay"></div>
+      <div class="hero-content text-center">
+        <img src="../assets/images/1.jpg" alt="Логотип компании" class="logo img-responsive" />
+        <h1>Найдите свою идеальную квартиру</h1>
+        <p>Мы предлагаем широкий выбор квартир в лучших районах города. Начните поиск прямо сейчас!</p>
+        <a href="/apartments" class="btn btn-primary">Посмотреть квартиры</a>
       </div>
     </div>
+
+    <!-- Features Section -->
+    <section class="features-section">
+      <h2 class="section-title">Почему выбирают нас?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <h3>Широкий выбор</h3>
+          <p>Большой ассортимент квартир в различных районах города.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-hand-holding-usd"></i>
+          </div>
+          <h3>Доступные цены</h3>
+          <p>Мы предлагаем квартиры по конкурентным ценам.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Надежность</h3>
+          <p>Все сделки проводятся с соблюдением законодательства.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2>Готовы найти свой новый дом?</h2>
+        <a href="/apartments" class="btn btn-accent">Начать поиск</a>
+      </div>
+    </section>
+
+    <!-- Clients Section -->
+    <section class="clients-section">
+      <h2 class="section-title">Наши клиенты</h2>
+      <a href="/clients" class="btn btn-secondary">Перейти к клиентам</a>
+    </section>
   </div>
 </template>
 
@@ -27,13 +63,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.row {
-  display: flex;
-  gap: 20px;
-}
-.img-responsive {
-  max-width: 100%;
-  height: auto;
-}
-</style>

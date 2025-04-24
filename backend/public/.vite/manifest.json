@@ -1,85 +1,70 @@
 {
   "index.html": {
-    "file": "assets/index-dDqSjNjW.js",
+    "file": "assets/index-Bh1Tk9gd.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "css": [
-      "assets/index-DXWA-TTG.css"
+      "assets/index-B4NHYILr.css"
     ],
     "assets": [
       "assets/logo-xg1krNkb.svg",
-      "assets/forge1-CSdVLVZs.jpg",
-      "assets/forge2-C7JTwtHJ.jpg",
-      "assets/forge3-D4crubEf.jpg",
-      "assets/team-BEwNRt3e.jpg",
-      "assets/process-HoJHLsQc.jpg",
-      "assets/history-D0Z5xMyK.jpg",
-      "assets/interior-DvGRxbaB.jpg",
-      "assets/awards-BGJirBEx.jpg",
-      "assets/map-VSgnQWqZ.jpg",
-      "assets/workshop1-BwDdXgqt.jpg",
-      "assets/workshop2-CU8S3hny.jpg",
-      "assets/workshop3-PdCY6Ogn.jpg",
-      "assets/workshop4-9jaTdaeV.jpg",
-      "assets/workshop5-DDg3pCS_.jpg"
+      "assets/1-CZi9KfUB.jpg",
+      "assets/11-Bb-AknNx.png",
+      "assets/13-BLVv6Eh-.png",
+      "assets/14-BgzQ9t6g.png",
+      "assets/15-BNQDnZio.png",
+      "assets/16-B1BaZAFz.png",
+      "assets/17-DC39uQ9S.png",
+      "assets/9-80t09aXM.png",
+      "assets/12-hbVDxA7L.png",
+      "assets/10-Br37EhM9.png",
+      "assets/6-Bynb7wia.png"
     ]
   },
-  "src/assets/images/awards.jpg": {
-    "file": "assets/awards-BGJirBEx.jpg",
-    "src": "src/assets/images/awards.jpg"
+  "src/assets/images/1.jpg": {
+    "file": "assets/1-CZi9KfUB.jpg",
+    "src": "src/assets/images/1.jpg"
   },
-  "src/assets/images/forge1.jpg": {
-    "file": "assets/forge1-CSdVLVZs.jpg",
-    "src": "src/assets/images/forge1.jpg"
+  "src/assets/images/10.png": {
+    "file": "assets/10-Br37EhM9.png",
+    "src": "src/assets/images/10.png"
   },
-  "src/assets/images/forge2.jpg": {
-    "file": "assets/forge2-C7JTwtHJ.jpg",
-    "src": "src/assets/images/forge2.jpg"
+  "src/assets/images/11.png": {
+    "file": "assets/11-Bb-AknNx.png",
+    "src": "src/assets/images/11.png"
   },
-  "src/assets/images/forge3.jpg": {
-    "file": "assets/forge3-D4crubEf.jpg",
-    "src": "src/assets/images/forge3.jpg"
+  "src/assets/images/12.png": {
+    "file": "assets/12-hbVDxA7L.png",
+    "src": "src/assets/images/12.png"
   },
-  "src/assets/images/history.jpg": {
-    "file": "assets/history-D0Z5xMyK.jpg",
-    "src": "src/assets/images/history.jpg"
+  "src/assets/images/13.png": {
+    "file": "assets/13-BLVv6Eh-.png",
+    "src": "src/assets/images/13.png"
   },
-  "src/assets/images/interior.jpg": {
-    "file": "assets/interior-DvGRxbaB.jpg",
-    "src": "src/assets/images/interior.jpg"
+  "src/assets/images/14.png": {
+    "file": "assets/14-BgzQ9t6g.png",
+    "src": "src/assets/images/14.png"
   },
-  "src/assets/images/map.jpg": {
-    "file": "assets/map-VSgnQWqZ.jpg",
-    "src": "src/assets/images/map.jpg"
+  "src/assets/images/15.png": {
+    "file": "assets/15-BNQDnZio.png",
+    "src": "src/assets/images/15.png"
   },
-  "src/assets/images/process.jpg": {
-    "file": "assets/process-HoJHLsQc.jpg",
-    "src": "src/assets/images/process.jpg"
+  "src/assets/images/16.png": {
+    "file": "assets/16-B1BaZAFz.png",
+    "src": "src/assets/images/16.png"
   },
-  "src/assets/images/team.jpg": {
-    "file": "assets/team-BEwNRt3e.jpg",
-    "src": "src/assets/images/team.jpg"
+  "src/assets/images/17.png": {
+    "file": "assets/17-DC39uQ9S.png",
+    "src": "src/assets/images/17.png"
   },
-  "src/assets/images/workshop1.jpg": {
-    "file": "assets/workshop1-BwDdXgqt.jpg",
-    "src": "src/assets/images/workshop1.jpg"
+  "src/assets/images/6.png": {
+    "file": "assets/6-Bynb7wia.png",
+    "src": "src/assets/images/6.png"
   },
-  "src/assets/images/workshop2.jpg": {
-    "file": "assets/workshop2-CU8S3hny.jpg",
-    "src": "src/assets/images/workshop2.jpg"
-  },
-  "src/assets/images/workshop3.jpg": {
-    "file": "assets/workshop3-PdCY6Ogn.jpg",
-    "src": "src/assets/images/workshop3.jpg"
-  },
-  "src/assets/images/workshop4.jpg": {
-    "file": "assets/workshop4-9jaTdaeV.jpg",
-    "src": "src/assets/images/workshop4.jpg"
-  },
-  "src/assets/images/workshop5.jpg": {
-    "file": "assets/workshop5-DDg3pCS_.jpg",
-    "src": "src/assets/images/workshop5.jpg"
+  "src/assets/images/9.png": {
+    "file": "assets/9-80t09aXM.png",
+    "src": "src/assets/images/9.png"
   },
   "src/assets/logo.svg": {
     "file": "assets/logo-xg1krNkb.svg",

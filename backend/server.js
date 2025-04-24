@@ -6,7 +6,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const app = express();
-const PORT = 5000; // Установлен порт напрямую
+const PORT = 5000;
 
 // Middleware
 app.use(cors({
@@ -18,26 +18,25 @@ app.use(cookieParser());
 
 // MySQL connection details (используем значения из .env)
 const db = mysql.createConnection({
-  host: 'bstcg9ifznrw4wz9k0x1-mysql.services.clever-cloud.com', // Хост базы данных
-  user: 'uw40ayuqhrvzbokd', // Имя пользователя базы данных
-  password: '2zNddQptA5Y0y1IbrTJA', // Пароль от базы данных
-  database: 'bstcg9ifznrw4wz9k0x1', // Название базы данных
+  host: 'br7ht48k7h1bbkpcjwzg-mysql.services.clever-cloud.com', // Хост базы данных
+  user: 'uhxjw67kxkzjkg05', // Имя пользователя базы данных
+  password: 'vlGkJwj7djnacMwi20IE', // Пароль от базы данных
+  database: 'br7ht48k7h1bbkpcjwzg', // Название базы данных
   port: 3306, // Порт базы данных
 });
 
 db.connect((err) => {
   if (err) {
     console.error('Error connecting to MySQL:', err.message);
-    process.exit(1);
+    process.exit(1); // Завершаем процесс при ошибке подключения
   }
   console.log('MySQL connected...');
 });
 
 // JWT Secret
-const JWT_SECRET = 'f1d2e3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2';
+const JWT_SECRET = '7f8a9b0c1d2e3f4g5h6i7j8k9l0m1n2o3p4q5r6s7t8u9v0w1x2y3z4';
 
-// Убрана функция authenticateToken, так как аутентификация больше не требуется
-// Создание таблиц и начального пользователя при запуске сервера
+// Создание таблиц при запуске сервера
 const initDatabase = () => {
   const createUsersTable = `
     CREATE TABLE IF NOT EXISTS users (
@@ -47,35 +46,37 @@ const initDatabase = () => {
       role ENUM('admin', 'user') NOT NULL
     )
   `;
-  const createCustomersTable = `
-    CREATE TABLE IF NOT EXISTS customers (
+
+  const createApartmentsTable = `
+    CREATE TABLE IF NOT EXISTS apartments (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      full_name VARCHAR(255) NOT NULL,
-      image VARCHAR(255),
-      phone VARCHAR(20),
-      email VARCHAR(255),
-      address TEXT,
-      company VARCHAR(255),
-      position VARCHAR(255),
-      birthdate DATE,
-      is_regular BOOLEAN DEFAULT FALSE,
-      notes TEXT
+      address VARCHAR(255) NOT NULL,
+      rooms INT NOT NULL,
+      total_area DECIMAL(10, 2) NOT NULL,
+      floor INT NOT NULL,
+      floors_in_building INT NOT NULL,
+      price DECIMAL(10, 2) NOT NULL,
+      renovation_type VARCHAR(255) NOT NULL,
+      description TEXT,
+      photo_path VARCHAR(255)
     )
   `;
-  const createForgeShopTable = `
-    CREATE TABLE IF NOT EXISTS forgeshop (
+
+  const createClientsTable = `
+    CREATE TABLE IF NOT EXISTS clients (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      image VARCHAR(255),
-      description TEXT NOT NULL,
-      weight DECIMAL(10, 2) NOT NULL,
-      length DECIMAL(10, 2) NOT NULL,
-      width DECIMAL(10, 2) NOT NULL,
-      height DECIMAL(10, 2) NOT NULL,
-      temperature INT NOT NULL,
-      is_completed BOOLEAN DEFAULT FALSE
+      first_name VARCHAR(255) NOT NULL,
+      last_name VARCHAR(255) NOT NULL,
+      phone_number VARCHAR(20) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      address VARCHAR(255),
+      age INT NOT NULL,
+      profession VARCHAR(255),
+      description TEXT,
+      photo_path VARCHAR(255)
     )
   `;
+
   db.query(createUsersTable, (err) => {
     if (err) {
       console.error('Error creating users table:', err.message);
@@ -83,20 +84,24 @@ const initDatabase = () => {
       console.log('Users table created or already exists.');
     }
   });
-  db.query(createCustomersTable, (err) => {
+
+  db.query(createApartmentsTable, (err) => {
     if (err) {
-      console.error('Error creating customers table:', err.message);
+      console.error('Error creating apartments table:', err.message);
     } else {
-      console.log('Customers table created or already exists.');
+      console.log('Apartments table created or already exists.');
     }
   });
-  db.query(createForgeShopTable, (err) => {
+
+  db.query(createClientsTable, (err) => {
     if (err) {
-      console.error('Error creating forgeshop table:', err.message);
+      console.error('Error creating clients table:', err.message);
     } else {
-      console.log('Forgeshop table created or already exists.');
+      console.log('Clients table created or already exists.');
     }
   });
+
+  // Проверка существования администратора
   const checkAdminQuery = 'SELECT COUNT(*) AS adminCount FROM users WHERE role = ?';
   db.query(checkAdminQuery, ['admin'], async (err, result) => {
     if (err) {
@@ -125,7 +130,7 @@ const initDatabase = () => {
 
 initDatabase();
 
-// Registration (активировано)
+// Registration
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -158,7 +163,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// Login (активировано)
+// Login
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -183,7 +188,7 @@ app.post('/api/login', (req, res) => {
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false, // Установлено false для разработки
+      secure: false,
       sameSite: 'strict',
       maxAge: 3600000,
     });
@@ -192,154 +197,111 @@ app.post('/api/login', (req, res) => {
   });
 });
 
-// Logout (активировано)
+// Logout
 app.post('/api/logout', (req, res) => {
   res.clearCookie('token');
   res.json({ message: 'Logout successful' });
 });
 
-// Получение всех клиентов (без аутентификации)
-app.get('/api/customers', (req, res) => {
-  db.query('SELECT * FROM customers', (err, results) => {
+// Routes for Apartments
+app.get('/api/apartments', (req, res) => {
+  db.query('SELECT * FROM apartments', (err, results) => {
     if (err) return res.status(500).send('Database error');
     res.json(results);
   });
 });
 
-// Получение клиента по ID (без аутентификации)
-app.get('/api/customers/:id', (req, res) => {
+app.get('/api/apartments/:id', (req, res) => {
   const { id } = req.params;
-  db.query('SELECT * FROM customers WHERE id = ?', [id], (err, results) => {
+  db.query('SELECT * FROM apartments WHERE id = ?', [id], (err, results) => {
     if (err) return res.status(500).send('Database error');
-    if (results.length === 0) return res.status(404).send('Customer not found');
+    if (results.length === 0) return res.status(404).send('Apartment not found');
     res.json(results[0]);
   });
 });
 
-// Создание нового клиента (без аутентификации)
-app.post('/api/customers', (req, res) => {
-  const { full_name, image, phone, email, address, company, position, birthdate, is_regular, notes } = req.body;
+app.post('/api/apartments', (req, res) => {
+  const { address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path } = req.body;
   const query = `
-    INSERT INTO customers (full_name, image, phone, email, address, company, position, birthdate, is_regular, notes)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-  db.query(
-    query,
-    [full_name, image, phone, email, address, company, position, birthdate, is_regular, notes],
-    (err) => {
-      if (err) return res.status(500).send('Database error');
-      res.status(201).send('Customer created successfully');
-    }
-  );
-});
-
-// Обновление клиента (без аутентификации)
-app.put('/api/customers/:id', (req, res) => {
-  const { id } = req.params;
-  const { full_name, image, phone, email, address, company, position, birthdate, is_regular, notes } = req.body;
-  const query = `
-    UPDATE customers
-    SET full_name = ?, image = ?, phone = ?, email = ?, address = ?, company = ?, position = ?, birthdate = ?, is_regular = ?, notes = ?
-    WHERE id = ?
-  `;
-  db.query(
-    query,
-    [full_name, image, phone, email, address, company, position, birthdate, is_regular, notes, id],
-    (err) => {
-      if (err) return res.status(500).send('Database error');
-      res.send('Customer updated successfully');
-    }
-  );
-});
-
-// Удаление клиента (без аутентификации)
-app.delete('/api/customers/:id', (req, res) => {
-  const { id } = req.params;
-  db.query('DELETE FROM customers WHERE id = ?', [id], (err) => {
-    if (err) return res.status(500).send('Database error');
-    res.send('Customer deleted successfully');
-  });
-});
-
-// Получение всех товаров (без аутентификации)
-app.get('/api/forgeshop', (req, res) => {
-  db.query('SELECT * FROM forgeshop', (err, results) => {
-    if (err) {
-      console.error('Database error during fetching all items:', err.message);
-      return res.status(500).send('Database error');
-    }
-    res.json(results);
-  });
-});
-
-// Получение товара по ID (без аутентификации)
-app.get('/api/forgeshop/:id', (req, res) => {
-  const { id } = req.params;
-  db.query('SELECT * FROM forgeshop WHERE id = ?', [id], (err, results) => {
-    if (err) {
-      console.error('Database error during fetching item by ID:', err.message);
-      return res.status(500).send('Database error');
-    }
-    if (results.length === 0) {
-      return res.status(404).send('Item not found');
-    }
-    res.json(results[0]);
-  });
-});
-
-// Создание нового товара (без аутентификации)
-app.post('/api/forgeshop', (req, res) => {
-  const { name, image, description, weight, length, width, height, temperature, is_completed } = req.body;
-  if (!name || !image || !description || weight == null || length == null || width == null || height == null || temperature == null || is_completed == null) {
-    return res.status(400).send('Missing required fields');
-  }
-  const query = `
-    INSERT INTO forgeshop (name, image, description, weight, length, width, height, temperature, is_completed)
+    INSERT INTO apartments (address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
-  db.query(query, [name, image, description, weight, length, width, height, temperature, is_completed], (err) => {
-    if (err) {
-      console.error('Database error during item creation:', err.message);
-      return res.status(500).send('Database error');
-    }
-    res.status(201).send('Item created successfully');
+  db.query(query, [address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path], (err) => {
+    if (err) return res.status(500).send('Database error');
+    res.status(201).send('Apartment created successfully');
   });
 });
 
-// Обновление товара (без аутентификации)
-app.put('/api/forgeshop/:id', (req, res) => {
+app.put('/api/apartments/:id', (req, res) => {
   const { id } = req.params;
-  const { name, image, description, weight, length, width, height, temperature, is_completed } = req.body;
-  if (!name || !image || !description || weight == null || length == null || width == null || height == null || temperature == null || is_completed == null) {
-    return res.status(400).send('Missing required fields');
-  }
+  const { address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path } = req.body;
   const query = `
-    UPDATE forgeshop
-    SET name = ?, image = ?, description = ?, weight = ?, length = ?, width = ?, height = ?, temperature = ?, is_completed = ?
+    UPDATE apartments
+    SET address = ?, rooms = ?, total_area = ?, floor = ?, floors_in_building = ?, price = ?, renovation_type = ?, description = ?, photo_path = ?
     WHERE id = ?
   `;
-  db.query(
-    query,
-    [name, image, description, weight, length, width, height, temperature, is_completed, id],
-    (err) => {
-      if (err) {
-        console.error('Database error during item update:', err.message);
-        return res.status(500).send('Database error');
-      }
-      res.send('Item updated successfully');
-    }
-  );
+  db.query(query, [address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path, id], (err) => {
+    if (err) return res.status(500).send('Database error');
+    res.send('Apartment updated successfully');
+  });
 });
 
-// Удаление товара (без аутентификации)
-app.delete('/api/forgeshop/:id', (req, res) => {
+app.delete('/api/apartments/:id', (req, res) => {
   const { id } = req.params;
-  db.query('DELETE FROM forgeshop WHERE id = ?', [id], (err) => {
-    if (err) {
-      console.error('Database error during item deletion:', err.message);
-      return res.status(500).send('Database error');
-    }
-    res.send('Item deleted successfully');
+  db.query('DELETE FROM apartments WHERE id = ?', [id], (err) => {
+    if (err) return res.status(500).send('Database error');
+    res.send('Apartment deleted successfully');
+  });
+});
+
+// Routes for Clients
+app.get('/api/clients', (req, res) => {
+  db.query('SELECT * FROM clients', (err, results) => {
+    if (err) return res.status(500).send('Database error');
+    res.json(results);
+  });
+});
+
+app.get('/api/clients/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM clients WHERE id = ?', [id], (err, results) => {
+    if (err) return res.status(500).send('Database error');
+    if (results.length === 0) return res.status(404).send('Client not found');
+    res.json(results[0]);
+  });
+});
+
+app.post('/api/clients', (req, res) => {
+  const { first_name, last_name, phone_number, email, address, age, profession, description, photo_path } = req.body;
+  const query = `
+    INSERT INTO clients (first_name, last_name, phone_number, email, address, age, profession, description, photo_path)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  db.query(query, [first_name, last_name, phone_number, email, address, age, profession, description, photo_path], (err) => {
+    if (err) return res.status(500).send('Database error');
+    res.status(201).send('Client created successfully');
+  });
+});
+
+app.put('/api/clients/:id', (req, res) => {
+  const { id } = req.params;
+  const { first_name, last_name, phone_number, email, address, age, profession, description, photo_path } = req.body;
+  const query = `
+    UPDATE clients
+    SET first_name = ?, last_name = ?, phone_number = ?, email = ?, address = ?, age = ?, profession = ?, description = ?, photo_path = ?
+    WHERE id = ?
+  `;
+  db.query(query, [first_name, last_name, phone_number, email, address, age, profession, description, photo_path, id], (err) => {
+    if (err) return res.status(500).send('Database error');
+    res.send('Client updated successfully');
+  });
+});
+
+app.delete('/api/clients/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM clients WHERE id = ?', [id], (err) => {
+    if (err) return res.status(500).send('Database error');
+    res.send('Client deleted successfully');
   });
 });
 

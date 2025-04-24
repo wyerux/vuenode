@@ -1,40 +1,75 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
+// Основные страницы
 import HomeView from '../views/HomeView.vue';
 import AboutView from '../views/AboutView.vue';
 import ContactView from '../views/ContactView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 
-// Импортируем компоненты для работы с таблицей Customers
-import CustomersIndexView from '../views/Customers/IndexView.vue';
-import CustomersCreateView from '../views/Customers/CreateView.vue';
-import CustomersDetailsView from '../views/Customers/DetailsView.vue';
-import CustomersUpdateView from '../views/Customers/UpdateView.vue';
+// Компоненты для работы с таблицей Clients (Клиенты)
+import ClientsIndexView from '../views/Clients/IndexView.vue';
+import ClientsCreateView from '../views/Clients/CreateView.vue';
+import ClientsDetailsView from '../views/Clients/DetailsView.vue';
+import ClientsUpdateView from '../views/Clients/UpdateView.vue';
 
-// Импортируем компоненты для работы с таблицей ForgeShop
-import ForgeShopIndexView from '../views/ForgeShop/IndexView.vue';
-import ForgeShopCreateView from '../views/ForgeShop/CreateView.vue';
-import ForgeShopDetailsView from '../views/ForgeShop/DetailsView.vue';
-import ForgeShopUpdateView from '../views/ForgeShop/UpdateView.vue';
+// Компоненты для работы с таблицей Apartments (Квартиры)
+import ApartmentsIndexView from '../views/Apartments/IndexView.vue';
+import ApartmentsCreateView from '../views/Apartments/CreateView.vue';
+import ApartmentsDetailsView from '../views/Apartments/DetailsView.vue';
+import ApartmentsUpdateView from '../views/Apartments/UpdateView.vue';
 
 const routes = [
+  // Основные маршруты
   { path: '/', component: HomeView },
   { path: '/about', component: AboutView },
   { path: '/contact', component: ContactView },
   { path: '/login', component: LoginView },
   { path: '/register', component: RegisterView },
 
-  // Маршруты для таблицы Customers
-  { path: '/customers', component: CustomersIndexView }, // Список клиентов
-  { path: '/customers/create', component: CustomersCreateView }, // Создание клиента
-  { path: '/customers/:id', component: CustomersDetailsView }, // Детали клиента
-  { path: '/customers/:id/edit', component: CustomersUpdateView }, // Редактирование клиента
+  // Маршруты для клиентов (Clients)
+  {
+    path: '/clients',
+    name: 'ClientsIndex',
+    component: ClientsIndexView,
+  },
+  {
+    path: '/clients/create',
+    name: 'ClientsCreate',
+    component: ClientsCreateView,
+  },
+  {
+    path: '/clients/:id',
+    name: 'ClientsDetails',
+    component: ClientsDetailsView,
+  },
+  {
+    path: '/clients/:id/edit',
+    name: 'ClientsEdit',
+    component: ClientsUpdateView,
+  },
 
-  // Маршруты для таблицы ForgeShop
-  { path: '/forgeshop', component: ForgeShopIndexView }, // Список товаров
-  { path: '/forgeshop/create', component: ForgeShopCreateView }, // Создание товара
-  { path: '/forgeshop/:id', component: ForgeShopDetailsView }, // Детали товара
-  { path: '/forgeshop/:id/edit', component: ForgeShopUpdateView }, // Редактирование товара
+  // Маршруты для квартир (Apartments)
+  {
+    path: '/apartments',
+    name: 'ApartmentsIndex',
+    component: ApartmentsIndexView,
+  },
+  {
+    path: '/apartments/create',
+    name: 'ApartmentsCreate',
+    component: ApartmentsCreateView,
+  },
+  {
+    path: '/apartments/:id',
+    name: 'ApartmentsDetails',
+    component: ApartmentsDetailsView,
+  },
+  {
+    path: '/apartments/:id/edit',
+    name: 'ApartmentsEdit',
+    component: ApartmentsUpdateView,
+  },
 ];
 
 const router = createRouter({

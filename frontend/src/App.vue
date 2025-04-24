@@ -10,8 +10,8 @@
           <li><router-link to="/">Главная</router-link></li>
           <li><router-link to="/about">О нас</router-link></li>
           <li><router-link to="/contact">Контакты</router-link></li>
-          <li><router-link to="/customers">Клиенты</router-link></li>
-          <li><router-link to="/forgeshop">Товары</router-link></li>
+          <li><router-link to="/clients">Клиенты</router-link></li>
+          <li><router-link to="/apartments">Квартиры</router-link></li> <!-- Изменено с "Товары" на "Квартиры" -->
 
           <!-- Ссылки для неавторизованных пользователей -->
           <li v-if="!isAuthenticated">
@@ -77,7 +77,7 @@ export default {
       this.username = '';
 
       // Перенаправляем на страницу входа
-      this.$router.push('/login');
+      this.$router.push('/login').catch(() => {}); // Добавлен `.catch()` для игнорирования ошибок навигации
     },
   },
 };
