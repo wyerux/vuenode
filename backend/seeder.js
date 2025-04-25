@@ -3,11 +3,11 @@ const mysql = require('mysql2');
 
 // MySQL connection details
 const db = mysql.createConnection({
-  host: 'b1dhoue1m2ldy1eovm1j-mysql.services.clever-cloud.com',
-  user: 'u8o8rsrgudy12a4e',
-  password: 'Vto2edNgmIxvGfe773cW',
-  database: 'b1dhoue1m2ldy1eovm1j',
-  port: 3306,
+  host: 'bwheoxi38k2g77fgohce-mysql.services.clever-cloud.com', // Хост базы данных
+  user: 'uwgnctq1l4os8exz', // Имя пользователя базы данных
+  password: 'Azgg757DyUDgZcp5DJxX', // Пароль от базы данных
+  database: 'bwheoxi38k2g77fgohce', // Название базы данных
+  port: 3306, // Порт базы данных
 });
 
 // Функция для генерации случайного числа в диапазоне
