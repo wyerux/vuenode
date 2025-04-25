@@ -13,11 +13,11 @@ import ClientsCreateView from '../views/Clients/CreateView.vue';
 import ClientsDetailsView from '../views/Clients/DetailsView.vue';
 import ClientsUpdateView from '../views/Clients/UpdateView.vue';
 
-// Компоненты для работы с таблицей Apartments (Квартиры)
-import ApartmentsIndexView from '../views/Apartments/IndexView.vue';
-import ApartmentsCreateView from '../views/Apartments/CreateView.vue';
-import ApartmentsDetailsView from '../views/Apartments/DetailsView.vue';
-import ApartmentsUpdateView from '../views/Apartments/UpdateView.vue';
+// Компоненты для работы с таблицей Cars (Автомобили)
+import CarsIndexView from '../views/Cars/IndexView.vue';
+import CarsCreateView from '../views/Cars/CreateView.vue';
+import CarsDetailsView from '../views/Cars/DetailsView.vue';
+import CarsUpdateView from '../views/Cars/UpdateView.vue';
 
 const routes = [
   // Основные маршруты
@@ -49,26 +49,26 @@ const routes = [
     component: ClientsUpdateView,
   },
 
-  // Маршруты для квартир (Apartments)
+  // Маршруты для автомобилей (Cars)
   {
-    path: '/apartments',
-    name: 'ApartmentsIndex',
-    component: ApartmentsIndexView,
+    path: '/cars',
+    name: 'CarsIndexView',
+    component: CarsIndexView,
   },
   {
-    path: '/apartments/create',
-    name: 'ApartmentsCreate',
-    component: ApartmentsCreateView,
+    path: '/cars/create',
+    name: 'CarCreateView',
+    component: CarsCreateView,
   },
   {
-    path: '/apartments/:id',
-    name: 'ApartmentsDetails',
-    component: ApartmentsDetailsView,
+    path: '/cars/:id',
+    name: 'CarDetailsView',
+    component: CarsDetailsView,
   },
   {
-    path: '/apartments/:id/edit',
-    name: 'ApartmentsEdit',
-    component: ApartmentsUpdateView,
+    path: '/cars/:id/edit',
+    name: 'CarUpdateView',
+    component: CarsUpdateView,
   },
 ];
 

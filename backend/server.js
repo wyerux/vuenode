@@ -18,12 +18,13 @@ app.use(cookieParser());
 
 // MySQL connection details (используем значения из .env)
 const db = mysql.createConnection({
-  host: 'br7ht48k7h1bbkpcjwzg-mysql.services.clever-cloud.com', // Хост базы данных
-  user: 'uhxjw67kxkzjkg05', // Имя пользователя базы данных
-  password: 'vlGkJwj7djnacMwi20IE', // Пароль от базы данных
-  database: 'br7ht48k7h1bbkpcjwzg', // Название базы данных
+  host: 'b1dhoue1m2ldy1eovm1j-mysql.services.clever-cloud.com', // Хост базы данных
+  user: 'u8o8rsrgudy12a4e', // Имя пользователя базы данных
+  password: 'Vto2edNgmIxvGfe773cW', // Пароль от базы данных
+  database: 'b1dhoue1m2ldy1eovm1j', // Название базы данных
   port: 3306, // Порт базы данных
 });
+
 
 db.connect((err) => {
   if (err) {
@@ -34,7 +35,7 @@ db.connect((err) => {
 });
 
 // JWT Secret
-const JWT_SECRET = '7f8a9b0c1d2e3f4g5h6i7j8k9l0m1n2o3p4q5r6s7t8u9v0w1x2y3z4';
+const JWT_SECRET = 'a3b6c9d2e5f8g1j4m7p0q3s6u9x2z5y8w1v4t7r0o2n5i8k1l4';
 
 // Создание таблиц при запуске сервера
 const initDatabase = () => {
@@ -47,16 +48,16 @@ const initDatabase = () => {
     )
   `;
 
-  const createApartmentsTable = `
-    CREATE TABLE IF NOT EXISTS apartments (
+  const createCarsTable = `
+    CREATE TABLE IF NOT EXISTS cars (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      address VARCHAR(255) NOT NULL,
-      rooms INT NOT NULL,
-      total_area DECIMAL(10, 2) NOT NULL,
-      floor INT NOT NULL,
-      floors_in_building INT NOT NULL,
+      brand VARCHAR(255) NOT NULL,
+      model VARCHAR(255) NOT NULL,
+      year INT NOT NULL,
       price DECIMAL(10, 2) NOT NULL,
-      renovation_type VARCHAR(255) NOT NULL,
+      mileage INT NOT NULL,
+      engine_type VARCHAR(255) NOT NULL,
+      transmission VARCHAR(255) NOT NULL,
       description TEXT,
       photo_path VARCHAR(255)
     )
@@ -85,11 +86,11 @@ const initDatabase = () => {
     }
   });
 
-  db.query(createApartmentsTable, (err) => {
+  db.query(createCarsTable, (err) => {
     if (err) {
-      console.error('Error creating apartments table:', err.message);
+      console.error('Error creating cars table:', err.message);
     } else {
-      console.log('Apartments table created or already exists.');
+      console.log('Cars table created or already exists.');
     }
   });
 
@@ -203,54 +204,54 @@ app.post('/api/logout', (req, res) => {
   res.json({ message: 'Logout successful' });
 });
 
-// Routes for Apartments
-app.get('/api/apartments', (req, res) => {
-  db.query('SELECT * FROM apartments', (err, results) => {
+// Routes for Cars
+app.get('/api/cars', (req, res) => {
+  db.query('SELECT * FROM cars', (err, results) => {
     if (err) return res.status(500).send('Database error');
     res.json(results);
   });
 });
 
-app.get('/api/apartments/:id', (req, res) => {
+app.get('/api/cars/:id', (req, res) => {
   const { id } = req.params;
-  db.query('SELECT * FROM apartments WHERE id = ?', [id], (err, results) => {
+  db.query('SELECT * FROM cars WHERE id = ?', [id], (err, results) => {
     if (err) return res.status(500).send('Database error');
-    if (results.length === 0) return res.status(404).send('Apartment not found');
+    if (results.length === 0) return res.status(404).send('Car not found');
     res.json(results[0]);
   });
 });
 
-app.post('/api/apartments', (req, res) => {
-  const { address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path } = req.body;
+app.post('/api/cars', (req, res) => {
+  const { brand, model, year, price, mileage, engine_type, transmission, description, photo_path } = req.body;
   const query = `
-    INSERT INTO apartments (address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path)
+    INSERT INTO cars (brand, model, year, price, mileage, engine_type, transmission, description, photo_path)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
-  db.query(query, [address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path], (err) => {
+  db.query(query, [brand, model, year, price, mileage, engine_type, transmission, description, photo_path], (err) => {
     if (err) return res.status(500).send('Database error');
-    res.status(201).send('Apartment created successfully');
+    res.status(201).send('Car created successfully');
   });
 });
 
-app.put('/api/apartments/:id', (req, res) => {
+app.put('/api/cars/:id', (req, res) => {
   const { id } = req.params;
-  const { address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path } = req.body;
+  const { brand, model, year, price, mileage, engine_type, transmission, description, photo_path } = req.body;
   const query = `
-    UPDATE apartments
-    SET address = ?, rooms = ?, total_area = ?, floor = ?, floors_in_building = ?, price = ?, renovation_type = ?, description = ?, photo_path = ?
+    UPDATE cars
+    SET brand = ?, model = ?, year = ?, price = ?, mileage = ?, engine_type = ?, transmission = ?, description = ?, photo_path = ?
     WHERE id = ?
   `;
-  db.query(query, [address, rooms, total_area, floor, floors_in_building, price, renovation_type, description, photo_path, id], (err) => {
+  db.query(query, [brand, model, year, price, mileage, engine_type, transmission, description, photo_path, id], (err) => {
     if (err) return res.status(500).send('Database error');
-    res.send('Apartment updated successfully');
+    res.send('Car updated successfully');
   });
 });
 
-app.delete('/api/apartments/:id', (req, res) => {
+app.delete('/api/cars/:id', (req, res) => {
   const { id } = req.params;
-  db.query('DELETE FROM apartments WHERE id = ?', [id], (err) => {
+  db.query('DELETE FROM cars WHERE id = ?', [id], (err) => {
     if (err) return res.status(500).send('Database error');
-    res.send('Apartment deleted successfully');
+    res.send('Car deleted successfully');
   });
 });
 

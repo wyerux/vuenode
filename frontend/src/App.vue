@@ -11,7 +11,7 @@
           <li><router-link to="/about">О нас</router-link></li>
           <li><router-link to="/contact">Контакты</router-link></li>
           <li><router-link to="/clients">Клиенты</router-link></li>
-          <li><router-link to="/apartments">Квартиры</router-link></li> <!-- Изменено с "Товары" на "Квартиры" -->
+          <li><router-link to="/cars">Автомобили</router-link></li> <!-- Изменено с "Товары" на "Квартиры" -->
 
           <!-- Ссылки для неавторизованных пользователей -->
           <li v-if="!isAuthenticated">

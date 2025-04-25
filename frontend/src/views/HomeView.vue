@@ -1,58 +1,47 @@
 <template>
-  <div class="container">
-    <h1>Главная - Продажа квартир</h1>
-
+  <div class="container fade-in">
     <!-- Hero Section -->
     <div class="hero-section">
       <div class="hero-overlay"></div>
       <div class="hero-content text-center">
-        <img src="../assets/images/1.jpg" alt="Логотип компании" class="logo img-responsive" />
-        <h1>Найдите свою идеальную квартиру</h1>
-        <p>Мы предлагаем широкий выбор квартир в лучших районах города. Начните поиск прямо сейчас!</p>
-        <a href="/apartments" class="btn btn-primary">Посмотреть квартиры</a>
+        <h1 class="display-4">Добро пожаловать в AutoLux</h1>
+        <p class="lead">
+          Мы предлагаем широкий выбор автомобилей премиум-класса с гарантией качества. Найдите свой идеальный автомобиль уже сегодня!
+        </p>
+        <div class="text-center mb-5">
+          <a href="/about" class="btn btn-primary btn-lg me-3">О нас</a>
+          <a href="/contact" class="btn btn-secondary btn-lg">Контакты</a>
+        </div>
       </div>
     </div>
 
-    <!-- Features Section -->
-    <section class="features-section">
-      <h2 class="section-title">Почему выбирают нас?</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-home"></i>
+    <!-- Why Choose Us Section -->
+    <section class="features-section bg-light py-5">
+      <div class="container">
+        <div class="row align-items-center gy-4">
+          <!-- Left Column: Description -->
+          <div class="col-md-6">
+            <h2 class="section-title">Почему выбирают нас?</h2>
+            <p class="fs-5">
+              В нашем автосалоне вы найдете автомобили от ведущих мировых производителей. Мы гордимся тем, что предлагаем не только широкий ассортимент, но и индивидуальный подход к каждому клиенту.
+            </p>
+            <ul class="list-unstyled fs-5">
+              <li><i class="fas fa-check-circle text-success me-2"></i> Профессиональные консультанты помогут подобрать автомобиль мечты.</li>
+              <li><i class="fas fa-check-circle text-success me-2"></i> Гарантия на все автомобили и техническое обслуживание.</li>
+              <li><i class="fas fa-check-circle text-success me-2"></i> Гибкие условия кредитования и лизинга.</li>
+              <li><i class="fas fa-check-circle text-success me-2"></i> Бесплатная доставка автомобиля в любой регион.</li>
+            </ul>
+            <p class="fs-5">
+              Мы стремимся сделать процесс покупки автомобиля максимально комфортным и приятным для вас. Посетите наш автосалон или свяжитесь с нами для получения дополнительной информации.
+            </p>
           </div>
-          <h3>Широкий выбор</h3>
-          <p>Большой ассортимент квартир в различных районах города.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-hand-holding-usd"></i>
+
+          <!-- Right Column: Image -->
+          <div class="col-md-6 text-center">
+            <img src="../assets/images/1.png" alt="Автосалон" class="img-fluid rounded shadow-lg img-responsive" />
           </div>
-          <h3>Доступные цены</h3>
-          <p>Мы предлагаем квартиры по конкурентным ценам.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <h3>Надежность</h3>
-          <p>Все сделки проводятся с соблюдением законодательства.</p>
         </div>
       </div>
-    </section>
-
-    <!-- Call to Action Section -->
-    <section class="cta-section">
-      <div class="cta-content">
-        <h2>Готовы найти свой новый дом?</h2>
-        <a href="/apartments" class="btn btn-accent">Начать поиск</a>
-      </div>
-    </section>
-
-    <!-- Clients Section -->
-    <section class="clients-section">
-      <h2 class="section-title">Наши клиенты</h2>
-      <a href="/clients" class="btn btn-secondary">Перейти к клиентам</a>
     </section>
   </div>
 </template>
@@ -62,4 +51,3 @@ export default {
   name: 'HomeView',
 };
 </script>
-

@@ -1,102 +1,102 @@
 <template>
-  <div class="container">
-    <h1>Контакты</h1>
-
-    <!-- Контактные данные -->
-    <section class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4 mb-4">
-            <div class="contact-card text-center p-4">
-              <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
-              <h5>Адрес</h5>
-              <p>Москва, ул. Недвижимости 15</p>
-            </div>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="contact-card text-center p-4">
-              <i class="fas fa-phone fa-3x text-primary mb-3"></i>
-              <h5>Телефон</h5>
-              <p>+7 (495) 123-45-67</p>
-            </div>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="contact-card text-center p-4">
-              <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
-              <h5>Email</h5>
-              <p>info@realestate.ru</p>
-            </div>
-          </div>
-        </div>
+  <div class="container fade-in">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-overlay"></div>
+      <div class="hero-content text-center">
+        <h1 class="display-4">Контакты</h1>
+        <p class="lead">
+          Свяжитесь с нами для заказа автомобиля или получения консультации. Мы всегда рады помочь!
+        </p>
       </div>
-    </section>
+    </div>
 
-    <!-- Форма обратной связи -->
-    <section class="section bg-light">
+    <!-- Gallery Section: First Row of Cards -->
+    <section class="gallery-section bg-light py-5">
       <div class="container">
-        <h2 class="section-title">Напишите нам</h2>
-        <div class="row">
-          <div class="col-md-8 mx-auto">
-            <form>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <input type="text" class="form-control form-control-lg" placeholder="Ваше имя" required />
-                </div>
-                <div class="col-md-6">
-                  <input type="email" class="form-control form-control-lg" placeholder="Email" required />
-                </div>
-                <div class="col-12">
-                  <textarea class="form-control form-control-lg" rows="5" placeholder="Сообщение" required></textarea>
-                </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary btn-lg w-100">Отправить</button>
-                </div>
+        <div class="row justify-content-center gy-4">
+          <div class="col-md-4">
+            <div class="card shadow-lg">
+              <img src="../assets/images/7.png" class="card-img-top img-fluid rounded" alt="Автосалон" />
+              <div class="card-body text-center">
+                <h5 class="card-title">Наш автосалон</h5>
+                <p class="card-text">Современный автосалон с широким выбором автомобилей.</p>
               </div>
-            </form>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-lg">
+              <img src="../assets/images/8.png" class="card-img-top img-fluid rounded" alt="Экспозиция" />
+              <div class="card-body text-center">
+                <h5 class="card-title">Экспозиция</h5>
+                <p class="card-text">Посетите нашу экспозицию и убедитесь в качестве автомобилей лично.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-lg">
+              <img src="../assets/images/9.png" class="card-img-top img-fluid rounded" alt="Тест-драйв" />
+              <div class="card-body text-center">
+                <h5 class="card-title">Тест-драйв</h5>
+                <p class="card-text">Запишитесь на тест-драйв и ощутите комфорт наших автомобилей.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Карта -->
-    <section class="section">
+    <!-- Gallery Section: Second Row of Cards -->
+    <section class="gallery-section bg-light py-5">
       <div class="container">
-        <h2 class="section-title">Где мы находимся</h2>
-        <div class="map-container" style="height: 500px;">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2246.069722683098!2d37.61749051552644!3d55.75582609863369!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54afc73d4b0c9%3A0x3d44d6cc5757cf4c!2z0JzQvtGB0LrQstCwLCDQmtC40LXQudGB0LrQsNGPINC-0LHQuy4!5e0!3m2!1sru!2sru!4v1685290800000!5m2!1sru!2sru"
-            style="border: 0; width: 100%; height: 100%;"
-            allowfullscreen=""
-            loading="lazy"
-          ></iframe>
+        <div class="row justify-content-center gy-4">
+          <div class="col-md-4">
+            <div class="card shadow-lg">
+              <img src="../assets/images/10.png" class="card-img-top img-fluid rounded" alt="Финансирование" />
+              <div class="card-body text-center">
+                <h5 class="card-title">Финансирование</h5>
+                <p class="card-text">Гибкие условия кредитования и лизинга для всех клиентов.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-lg">
+              <img src="../assets/images/11.png" class="card-img-top img-fluid rounded" alt="Обратная связь" />
+              <div class="card-body text-center">
+                <h5 class="card-title">Обратная связь</h5>
+                <p class="card-text">Мы всегда на связи: звоните, пишите или приезжайте к нам.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-lg">
+              <img src="../assets/images/12.png" class="card-img-top img-fluid rounded" alt="Социальные сети" />
+              <div class="card-body text-center">
+                <h5 class="card-title">Социальные сети</h5>
+                <p class="card-text">Следите за нашими новостями и акциями в соцсетях.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Галерея офиса -->
-    <section class="section bg-light">
-      <div class="container">
-        <h2 class="section-title">Галерея офиса</h2>
-        <div class="row g-4">
-          <div class="col-md-4">
-            <img src="../assets/images/9.png" alt="Офис" class="img-fluid rounded-3 shadow img-responsive" />
-          </div>
-          <div class="col-md-4">
-            <img src="../assets/images/12.png" alt="Офис" class="img-fluid rounded-3 shadow img-responsive" />
-          </div>
-          <div class="col-md-4">
-            <img src="../assets/images/13.png" alt="Офис" class="img-fluid rounded-3 shadow img-responsive" />
-          </div>
-          <div class="col-md-4">
-            <img src="../assets/images/10.png" alt="Офис" class="img-fluid rounded-3 shadow img-responsive" />
-          </div>
-          <div class="col-md-4">
-            <img src="../assets/images/6.png" alt="Офис" class="img-fluid rounded-3 shadow img-responsive" />
-          </div>
-          <div class="col-md-4">
-            <img src="../assets/images/15.png" alt="Офис" class="img-fluid rounded-3 shadow img-responsive" />
-          </div>
-        </div>
+    <!-- Contact Information Section -->
+    <section class="contact-info-section py-5">
+      <div class="container text-center">
+        <h2 class="section-title">Контактная информация</h2>
+        <p><strong>Телефон:</strong> +7 (999) 123-45-67</p>
+        <p>
+          <strong>Email:</strong>
+          <a href="mailto:info@autolux.ru" class="text-primary">info@autolux.ru</a>
+        </p>
+        <p>
+          <strong>Социальные сети:</strong>
+          <a href="#" target="_blank" class="ms-2 text-primary">Instagram</a>
+          <a href="#" target="_blank" class="ms-2 text-primary">Facebook</a>
+          <a href="#" target="_blank" class="ms-2 text-primary">VK</a>
+        </p>
+        <p><strong>Адрес:</strong> г. Москва, ул. Автомобильная, д. 10</p>
       </div>
     </section>
   </div>
